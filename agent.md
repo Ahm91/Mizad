@@ -7,9 +7,9 @@
 | البند | القيمة |
 |---|---|
 | آخر تحديث | 2026-11-07 |
-| المرحلة الحالية | **Phase 2 — Database Design & Infrastructure** (Not Started) |
-| آخر مرحلة مكتملة | Phase 1 — Solution Architecture & Project Foundation (2026-11-07) |
-| المهمة التالية | **2.1** `MizadDbContext` + `IMizadDbContext` + الاصطلاحات والترتيب العربي |
+| المرحلة الحالية | **Phase 3 — Authentication & Security Foundation** (Not Started) |
+| آخر مرحلة مكتملة | Phase 2 — Database Design & Infrastructure (2026-11-07) |
+| المهمة التالية | **3.1** كتالوج الصلاحيات `Permissions` |
 
 ---
 
@@ -23,7 +23,7 @@
 | المعمارية | Modular Monolith بطبقات نظيفة (D-001) |
 | التشغيل | محلي دون إنترنت؛ جهاز واحد أو شبكة محلية بقاعدة SQL Server مشتركة (D-019) |
 | بيئة التطوير المؤكدة | Windows 11، .NET SDK 10.0.401، SQL Server 2025 Developer (`.`)، Tajawal مثبت، VS 2026 (`Mizad.slnx`) |
-| الحالة الحالية للكود | أساس Phase 1: 4 مشاريع src + 2 اختبار، استضافة عامة، Serilog، إعدادات محلية، 33 اختباراً ناجحاً؛ لا قاعدة بيانات بعد (Phase 2) |
+| الحالة الحالية للكود | Phase 1 + Phase 2: قاعدة بيانات كاملة (45 جدولاً) بترحيل تلقائي آمن، خدمات البنية، 85 اختباراً ناجحاً؛ لا واجهات بعد (Phase 4) |
 | المراجع البصرية | `UI/` (24 صورة) + `Logo.png` — الخريطة في [docs/UI_IMPLEMENTATION_MAP.md](docs/UI_IMPLEMENTATION_MAP.md) |
 | Git | مستودع موجود أنشأه المالك من Visual Studio: الفرع `master`، البعيد `origin` = `https://github.com/Ahm91/Mizad.git`، التزامان أوليان (`.gitignore`/`.gitattributes` القياسيان + ملفات القالب و`UI/` و`Logo.png`). وثائق Phase 0 غير ملتزم بها بعد. |
 
@@ -168,7 +168,7 @@ Mizad.slnx
 |---|---|---|---|---|
 | P0 | Requirements Analysis & Master Planning | **Completed** (2026-11-07) | — | كل الصور |
 | P1 | Solution Architecture & Project Foundation | **Completed** (2026-11-07) | P0 | — |
-| P2 | Database Design & Infrastructure | Not Started | P1 | — |
+| P2 | Database Design & Infrastructure | **Completed** (2026-11-07) | P1 | — |
 | P3 | Authentication & Security Foundation | Not Started | P2 | — |
 | P4 | Design System & Application Shell | Not Started | P3 | UI-01, UI-02 (الإطار) |
 | P5 | Products & Categories Management | Not Started | P4 | UI-06 |
@@ -345,7 +345,7 @@ P0.
 
 ## Phase 2 — Database Design & Infrastructure
 
-Status: Not Started
+Status: Completed (2026-11-07)
 
 ### Objective
 تنفيذ الكيانات والإعدادات والقيود والفهارس والترحيل الأول والبذور وخدمات البنية للمعاملات والتسلسلات وساعة الخادم والإعدادات.
@@ -354,35 +354,35 @@ Status: Not Started
 P1.
 
 ### Tasks
-- [ ] 2.1 `MizadDbContext` + `IMizadDbContext` + `ConfigureConventions` (decimal افتراضي 19,4، `datetime2` بدقة 3، طول نصوص صريح إلزامي)، `UseCollation("Arabic_100_CI_AI")`.
-- [ ] 2.2 كيانات وإعدادات الأمان والإدارة: Users, Roles, RolePermissions, AuditLogs, Settings, DocumentSequences, BackupHistory.
-- [ ] 2.3 كيانات الأصناف: Categories, Units, Products, ProductUnits, ProductBarcodes, ProductImages.
-- [ ] 2.4 كيانات المخزون: Warehouses, StockBalances, StockMovements, AdjustmentReasons, StockAdjustments(+Lines), InventoryCounts(+Lines), StockTransfers(+Lines).
-- [ ] 2.5 كيانات الأطراف: Customers, Suppliers, OpeningBalances, PartyLedgerEntries, PartySettlements.
-- [ ] 2.6 كيانات المبيعات والمشتريات: SalesInvoices(+Lines), PurchaseInvoices(+Lines).
-- [ ] 2.7 كيانات المرتجعات: ReturnReasons, SalesReturns(+Lines), PurchaseReturns(+Lines).
-- [ ] 2.8 كيانات الخزينة: CashAccounts, CashTransactions, CashVouchers, VoucherReasons, ExpenseCategories, Expenses, CashTransfers, CashierShifts.
-- [ ] 2.9 كل قيود CHECK والفهارس الفريدة المُفلترة وRowVersion وسلوك الحذف Restrict كما في DATABASE_DESIGN.
-- [ ] 2.10 `AuditableEntityInterceptor` يملأ أعمدة التدقيق من `ICurrentUser`/`IClock`.
-- [ ] 2.11 `ArabicNormalizer` (Domain) + تعبئة `SearchName` تلقائياً عند الحفظ.
-- [ ] 2.12 البذور عبر `UseAsyncSeeding` (idempotent): الوحدات، «عام»، المخزن الرئيسي، الزبون النقدي، الحسابات النقدية، أسباب التسوية والمرتجع والسندات، تصنيفات المصروفات، التسلسلات، الإعدادات الافتراضية (الأدوار والصلاحيات في 3.2). لا مستخدمين.
-- [ ] 2.13 الترحيل `InitialCreate` ومراجعة SQL المولد (سكربت idempotent في `artifacts/sql/`).
-- [ ] 2.14 `DatabaseInitializer`: الحالة (Unreachable/Missing/PendingMigrations/UpToDate/NewerThanApp)، الإنشاء بالترتيب العربي، تفعيل `READ_COMMITTED_SNAPSHOT`، **التطبيق التلقائي للترحيلات وفق D-043** (المهام 2.21–2.27)، مع تقارير تقدم (`IProgress<StartupProgress>`: اسم الخطوة والترحيل الجاري) تعرضها شاشة البداية (4.14).
-- [ ] 2.15 `IUnitOfWork.ExecuteInTransactionAsync` مع `CreateExecutionStrategy` و`EnableRetryOnFailure`.
-- [ ] 2.16 `ISequenceAllocator` (UPDATE…OUTPUT مع UPDLOCK)، `IServerClock` (`SYSDATETIME()`).
-- [ ] 2.17 `ISettingsService`: قراءة مكتوبة النوع بذاكرة مؤقتة، حفظ مع تدقيق، قفل `Currency.Decimals` بعد أول اعتماد.
-- [ ] 2.18 ترجمة أخطاء SQL الشائعة (تكرار مفتاح فريد 2601/2627، FK 547، تعارض تزامن) إلى `Error` عربي.
-- [ ] 2.19 اختبارات التكامل TS-010…TS-014 + اختبار البذور idempotent (تشغيل مرتين).
-- [ ] 2.20 تحديث سجل التغييرات في DATABASE_DESIGN.md بأي انحراف.
+- [x] 2.1 `MizadDbContext` + `IMizadDbContext` + `ConfigureConventions` (decimal افتراضي 19,4، `datetime2` بدقة 3، طول نصوص صريح إلزامي)، `UseCollation("Arabic_100_CI_AI")`. — ✅ **انحراف موثق:** لا `UseCollation` في النموذج لأنه يولّد `ALTER DATABASE` داخل الترحيل (ممنوع — D-043)؛ الترتيب يُضبط في `CREATE DATABASE` داخل المُهيئ، والمُهيئ يحذّر إن وجد قاعدة بترتيب آخر.
+- [x] 2.2 كيانات وإعدادات الأمان والإدارة: Users, Roles, RolePermissions, AuditLogs, Settings, DocumentSequences, BackupHistory.
+- [x] 2.3 كيانات الأصناف: Categories, Units, Products, ProductUnits, ProductBarcodes, ProductImages.
+- [x] 2.4 كيانات المخزون: Warehouses, StockBalances, StockMovements, AdjustmentReasons, StockAdjustments(+Lines), InventoryCounts(+Lines), StockTransfers(+Lines).
+- [x] 2.5 كيانات الأطراف: Customers, Suppliers, OpeningBalances, PartyLedgerEntries, PartySettlements.
+- [x] 2.6 كيانات المبيعات والمشتريات: SalesInvoices(+Lines), PurchaseInvoices(+Lines).
+- [x] 2.7 كيانات المرتجعات: ReturnReasons, SalesReturns(+Lines), PurchaseReturns(+Lines).
+- [x] 2.8 كيانات الخزينة: CashAccounts, CashTransactions, CashVouchers, VoucherReasons, ExpenseCategories, Expenses, CashTransfers, CashierShifts.
+- [x] 2.9 كل قيود CHECK والفهارس الفريدة المُفلترة وRowVersion وسلوك الحذف Restrict كما في DATABASE_DESIGN.
+- [x] 2.10 `AuditableEntityInterceptor` يملأ أعمدة التدقيق من `ICurrentUser`/`IClock`.
+- [x] 2.11 `ArabicNormalizer` (Domain) + تعبئة `SearchName` تلقائياً عند الحفظ.
+- [x] 2.12 البذور عبر `UseAsyncSeeding` (idempotent): الوحدات، «عام»، المخزن الرئيسي، الزبون النقدي، الحسابات النقدية، أسباب التسوية والمرتجع والسندات، تصنيفات المصروفات، التسلسلات، الإعدادات الافتراضية (الأدوار والصلاحيات في 3.2). لا مستخدمين. — ✅ **انحراف موثق:** بذّار صريح `DatabaseSeeder` (ساكن) يستدعيه المُهيئ بعد الترحيل، لا `UseAsyncSeeding`، ليكون هو نفسه «مزامنة البذور» (2.24) ويُختبر مباشرة.
+- [x] 2.13 الترحيل `InitialCreate` ومراجعة SQL المولد (سكربت idempotent في `artifacts/sql/`).
+- [x] 2.14 `DatabaseInitializer`: الحالة (Unreachable/Missing/PendingMigrations/UpToDate/NewerThanApp)، الإنشاء بالترتيب العربي، تفعيل `READ_COMMITTED_SNAPSHOT`، **التطبيق التلقائي للترحيلات وفق D-043** (المهام 2.21–2.27)، مع تقارير تقدم (`IProgress<StartupProgress>`: اسم الخطوة والترحيل الجاري) تعرضها شاشة البداية (4.14).
+- [x] 2.15 `IUnitOfWork.ExecuteInTransactionAsync` مع `CreateExecutionStrategy` و`EnableRetryOnFailure`.
+- [x] 2.16 `ISequenceAllocator` (UPDATE…OUTPUT مع UPDLOCK)، `IServerClock` (`SYSDATETIME()`).
+- [x] 2.17 `ISettingsService`: قراءة مكتوبة النوع بذاكرة مؤقتة، حفظ مع تدقيق، قفل `Currency.Decimals` بعد أول اعتماد.
+- [x] 2.18 ترجمة أخطاء SQL الشائعة (تكرار مفتاح فريد 2601/2627، FK 547، تعارض تزامن) إلى `Error` عربي.
+- [x] 2.19 اختبارات التكامل TS-010…TS-014 + اختبار البذور idempotent (تشغيل مرتين).
+- [x] 2.20 تحديث سجل التغييرات في DATABASE_DESIGN.md بأي انحراف.
 
 **الترحيل التلقائي الآمن (D-043 — طلب المالك):**
-- [ ] 2.21 قفل الترحيل على مستوى القاعدة: `sp_getapplock @Resource='Mizad.Migrations', @LockMode='Exclusive', @LockOwner='Session'` على اتصال مخصص مع مهلة، وإعادة فحص الترحيلات المعلقة بعد الحصول عليه؛ الأجهزة المنتظرة تُبلّغ «جارٍ تحديث قاعدة البيانات من جهاز آخر…». (EF Core 9+ يقفل `Migrate` داخلياً أيضاً — قفلنا يغطي النسخة + الترحيل + البذور كوحدة واحدة.)
-- [ ] 2.22 خدمة نسخ احتياطي أساسية `IDatabaseBackupService.BackupAsync(BackupType)`: `BACKUP DATABASE … WITH COPY_ONLY, CHECKSUM, INIT` إلى `Backup.Path` إن ضُبط وإلا `SERVERPROPERTY('InstanceDefaultBackupPath')`، ثم `RESTORE VERIFYONLY WITH CHECKSUM`، وتسجيل في `BackupHistory` و`backup-log.json`. تُستخدم هنا لنسخة `PreMigration` الإلزامية، وتوسعها Phase 16 (الجدولة، الاحتفاظ، الاستعادة، الواجهة).
-- [ ] 2.23 تسلسل الترحيل التلقائي: قفل ⇐ نسخة PreMigration (فشلها يوقف الترحيل) ⇐ `MigrateAsync` (كل ترحيل في معاملة) ⇐ مزامنة البذور ⇐ تحقق «لا معلق» ⇐ تحرير القفل ⇐ تدقيق. فشل ترحيل ⇐ نتيجة خطأ عربية برقم مرجعي، والقاعدة على آخر ترحيل سليم.
-- [ ] 2.24 مزامنة البذور (Seed Sync) idempotent بعد كل ترحيل: إضافة الصلاحيات الجديدة لدور المدير، مفاتيح الإعدادات الجديدة بقيمها الافتراضية، القيم المرجعية الجديدة — دون تعديل بيانات المستخدم القائمة.
-- [ ] 2.25 فحص توافق الإصدار: القاعدة أحدث من البرنامج (ترحيلات مطبقة غير معروفة للبرنامج) ⇐ حالة `NewerThanApp` تمنع التشغيل برسالة التحديث.
-- [ ] 2.26 حراسة الترحيلات (اختبارات): `HasPendingModelChanges() == false`؛ تطبيق كل الترحيلات على قاعدة فارغة؛ التطبيق مرتين بلا أثر؛ 3 مُهيئات متزامنة ⇐ ترحيل واحد ونسخة واحدة بلا أخطاء؛ حقن فشل في ترحيل ⇐ القاعدة سليمة على آخر ترحيل؛ فحص ملفات الترحيل الجديدة بحثاً عن `DropTable/DropColumn/RenameColumn` غير المدرجة في قائمة الاستثناء (TS-015…TS-020).
-- [ ] 2.27 توثيق «سياسة الترحيلات» ودليل إضافة ترحيل جديد في DATABASE_DESIGN §14، ومنح حساب التطبيق `db_owner` على قاعدة مِيزاد فقط في DEPLOYMENT.
+- [x] 2.21 قفل الترحيل على مستوى القاعدة: `sp_getapplock @Resource='Mizad.Migrations', @LockMode='Exclusive', @LockOwner='Session'` على اتصال مخصص مع مهلة، وإعادة فحص الترحيلات المعلقة بعد الحصول عليه؛ الأجهزة المنتظرة تُبلّغ «جارٍ تحديث قاعدة البيانات من جهاز آخر…». (EF Core 9+ يقفل `Migrate` داخلياً أيضاً — قفلنا يغطي النسخة + الترحيل + البذور كوحدة واحدة.)
+- [x] 2.22 خدمة نسخ احتياطي أساسية `IDatabaseBackupService.BackupAsync(BackupType)`: `BACKUP DATABASE … WITH COPY_ONLY, CHECKSUM, INIT` إلى `Backup.Path` إن ضُبط وإلا `SERVERPROPERTY('InstanceDefaultBackupPath')`، ثم `RESTORE VERIFYONLY WITH CHECKSUM`، وتسجيل في `BackupHistory` و`backup-log.json`. تُستخدم هنا لنسخة `PreMigration` الإلزامية، وتوسعها Phase 16 (الجدولة، الاحتفاظ، الاستعادة، الواجهة).
+- [x] 2.23 تسلسل الترحيل التلقائي: قفل ⇐ نسخة PreMigration (فشلها يوقف الترحيل) ⇐ `MigrateAsync` (كل ترحيل في معاملة) ⇐ مزامنة البذور ⇐ تحقق «لا معلق» ⇐ تحرير القفل ⇐ تدقيق. فشل ترحيل ⇐ نتيجة خطأ عربية برقم مرجعي، والقاعدة على آخر ترحيل سليم.
+- [x] 2.24 مزامنة البذور (Seed Sync) idempotent بعد كل ترحيل: إضافة الصلاحيات الجديدة لدور المدير، مفاتيح الإعدادات الجديدة بقيمها الافتراضية، القيم المرجعية الجديدة — دون تعديل بيانات المستخدم القائمة.
+- [x] 2.25 فحص توافق الإصدار: القاعدة أحدث من البرنامج (ترحيلات مطبقة غير معروفة للبرنامج) ⇐ حالة `NewerThanApp` تمنع التشغيل برسالة التحديث.
+- [x] 2.26 حراسة الترحيلات (اختبارات): `HasPendingModelChanges() == false`؛ تطبيق كل الترحيلات على قاعدة فارغة؛ التطبيق مرتين بلا أثر؛ 3 مُهيئات متزامنة ⇐ ترحيل واحد ونسخة واحدة بلا أخطاء؛ حقن فشل في ترحيل ⇐ القاعدة سليمة على آخر ترحيل؛ فحص ملفات الترحيل الجديدة بحثاً عن `DropTable/DropColumn/RenameColumn` غير المدرجة في قائمة الاستثناء (TS-015…TS-020). — ✅ + اختبار فشل ترحيل فعلي (قاعدة للقراءة فقط بعد النسخة) وحالة خادم غير متاح.
+- [x] 2.27 توثيق «سياسة الترحيلات» ودليل إضافة ترحيل جديد في DATABASE_DESIGN §14، ومنح حساب التطبيق `db_owner` على قاعدة مِيزاد فقط في DEPLOYMENT.
 
 ### Related UI
 لا شيء (تقارير التقدم تُعرض في شاشة البداية — 4.14).
@@ -410,10 +410,18 @@ TS-010، TS-011، TS-012، TS-013، TS-014؛ TS-015…TS-020 (الترحيل ا�
 - مسار النسخ الافتراضي لنسخة SQL قد يكون على قرص ممتلئ — رسالة واضحة وتوقف آمن قبل الترحيل.
 
 ### Completion Evidence
-—
+- **البناء:** `./scripts/build.ps1` ⇐ **0 Warning(s), 0 Error(s)**.
+- **الاختبارات:** `dotnet test --solution Mizad.slnx -c Release` ⇒ **total 85، succeeded 85، failed 0** — وحدات 52 (منها: حراسة النموذج والترحيلات 7 [TS-015، TS-020]، التطبيع العربي 13 [TS-807]، الإعدادات والتسلسلات 5)؛ تكامل 33 على SQL Server 2025 (المخطط والبذور TS-010، القيود TS-011/012/014، التسلسلات المتوازية TS-013، الخدمات، المُهيئ TS-016…TS-020 + فشل ترحيل فعلي + خادم غير متاح).
+- **مراجعة سكربت الترحيل** (`artifacts/sql/migrate.sql`، غير مُتتبع): 45 جدولاً + `__EFMigrationsHistory`، 66 قيد CHECK، 152 مفتاحاً خارجياً، الحذف المتتالي في 11 علاقة مسموحة فقط، 46 فهرساً فريداً (17 مرشّح)، 4 أعمدة max مقصودة فقط، لا float، لا `ALTER DATABASE`، 22 عمود rowversion.
+- **النظافة:** لا قواعد `Mizad_IT_*` متبقية، ولا سجلات نسخ لها في msdb، ولا ملفات نسخ اختبار في مجلد النسخ (تحقق عبر `sys.dm_os_enumerate_filesystem`).
+- **التشغيل:** `Mizad.exe` يُقلع ويستجيب ويُغلق برمز 0 بعد إضافة خدمات الطبقة.
+- **ملفات جديدة:** `dotnet-tools.json`؛ `src/Mizad.Domain/{Common/DocumentEntity.cs, Common/SharedEnums.cs, Calculations/ArabicNormalizer.cs, Administration/*, Identity/*, Catalog/*, Inventory/*, Parties/*, Sales/*, Purchasing/*, Returns/*, Treasury/*}`؛ `src/Mizad.Application/Abstractions/{Persistence/*, Database/*}`؛ `src/Mizad.Infrastructure/{Persistence/*, Persistence/Configurations/*, Persistence/Seed/*, Persistence/Migrations/*, Backup/*}`؛ `tests/Mizad.IntegrationTests/{TestDatabase.cs, TestData.cs, Persistence/*}`؛ `tests/Mizad.UnitTests/{Domain/ArabicNormalizerTests.cs, Domain/SettingsAndSequencesTests.cs, Infrastructure/ModelAndMigrationGuardTests.cs}`.
+- **ملفات معدلة:** `Directory.Packages.props` (EF Core 10.0.14، DI/Logging)، csproj لـ Application/Infrastructure/IntegrationTests، `.editorconfig` (مجلد الترحيلات كود مولّد)، `Common/Entity.cs` (`IHasCreationStamp`، `LedgerRecord`)، `IAuditLogger` (التوقيع `Log(context, entry)`)، `DependencyInjection.cs`، `SqlServerFixture.cs`.
 
 ### Completion Summary
-—
+قاعدة البيانات كاملة وفق DATABASE_DESIGN (45 جدولاً) بترحيل `InitialCreate`، مع **ترحيل تلقائي آمن** (D-043): قفل على مستوى القاعدة، نسخة PreMigration متحقق منها قبل أي ترحيل (وفشلها يمنع الترحيل)، ترحيلات واحداً واحداً بتقارير تقدم عربية، مزامنة بذور، تدقيق، ورفض القاعدة الأحدث من البرنامج. خدمات البنية جاهزة: وحدة العمل بالمعاملات وإعادة المحاولة، الترقيم بلا فجوات، ساعة الخادم، سجل التدقيق، الإعدادات المكتوبة بالنوع مع قفل منازل العملة، ترجمة أخطاء SQL للعربية، وتصنيف أخطاء الاتصال (أساس D-046).
+**انحرافات موثقة** في DATABASE_DESIGN §13: الترتيب في `CREATE DATABASE` لا في النموذج؛ بذّار صريح بدل `UseAsyncSeeding`؛ `RolePermissionGrant`؛ حالات الجرد عبر `DocumentStatus` + `IsSubmitted`؛ `ReturnSettlementMethod.PartyCredit` مشترك؛ فهرس البنود المفتوحة بديل (الفهارس المرشحة لا تقارن عمودين).
+**ملاحظات للمراحل التالية:** أي تعديل على الكيانات = `dotnet ef migrations add <Name> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure --output-dir Persistence/Migrations` ثم اختبار `HasPendingModelChanges`. أي صلاحية/إعداد/قيمة مرجعية جديدة تضاف إلى `DatabaseSeeder` أو `SettingKeys`. البحث العربي يقارن `SearchName` بـ `ArabicNormalizer.Normalize(text)`.
 
 ---
 
@@ -1258,9 +1266,10 @@ LOGO (أيقونة المثبت).
 ## 16. ما تم تنفيذه فعلياً
 - **Phase 0 (2026-11-07):** فحص البيئة والصور الـ24 والشعار؛ استخراج الألوان؛ إنشاء الوثائق السبع وملفات الإدارة؛ 42 قراراً؛ تصميم ~45 جدولاً؛ خطة 19 مرحلة. لم يُكتب كود.
 - **Phase 1 (2026-11-07):** بنية الحل (Domain/Application/Infrastructure/Desktop + UnitTests/IntegrationTests)، إدارة مركزية للحزم، `.editorconfig`، استضافة عامة في WPF، Serilog بحجب الأسرار، معالجة أخطاء عامة عربية، إعدادات محلية (اتصال مشفر DPAPI، جهاز، مستخدم)، اختبارات معمارية وتكامل على SQL Server، `scripts/build.ps1`. 33/33 اختباراً ناجحاً، 0 تحذيرات.
+- **Phase 2 (2026-11-07):** 45 جدولاً وفق DATABASE_DESIGN بترحيل `InitialCreate`؛ ترحيل تلقائي آمن (قفل، نسخة PreMigration متحقق منها، ترحيلات بتقارير تقدم، مزامنة بذور، تدقيق، رفض القاعدة الأحدث)؛ وحدة العمل، الترقيم بلا فجوات، ساعة الخادم، التدقيق، الإعدادات، ترجمة أخطاء SQL. 85/85 اختباراً، 0 تحذيرات.
 
 ## 17. ما تبقى من العمل
-Phase 2 حتى Phase 18 بالكامل (انظر §9 و§10).
+Phase 3 حتى Phase 18 بالكامل (انظر §9 و§10).
 
 ## 18. المشاكل المعروفة
 | # | المشكلة | الأثر | الحالة |
@@ -1269,18 +1278,20 @@ Phase 2 حتى Phase 18 بالكامل (انظر §9 و§10).
 | K-02 | الشعار متوفر كصورة نقطية فقط بنص كحلي | يحتاج نسخة فاتحة للشريط الجانبي | مفتوح (4.4) |
 | K-03 | عمل Phase 0 وPhase 1 غير ملتزم به في Git (الفرع `phase/01-foundation` محلياً؛ `master` + `origin` بلا تغيير) | يُفقد إن لم يُلتزم | مفتوح — بانتظار إذن المالك بالالتزام |
 | K-04 | بقايا القالب `Mizad/bin`, `Mizad/obj` | — | **مغلق** (1.3: المجلد القديم أُزيل كاملاً) |
-| K-05 | Visual Studio كان مفتوحاً على الحل أثناء إعادة الهيكلة | قد يعرض المشروع القديم `Mizad\Mizad.csproj` كمفقود | مفتوح — أغلق الحل في VS وأعد فتح `Mizad.slnx` |
+| K-05 | بعد نقل المشروع اختار Visual Studio `Mizad.Application` (مكتبة) كمشروع بدء فيفشل F5 | **مُصلح في المستودع (2026-11-07):** `DefaultStartup` على `Mizad.Desktop` + `launchSettings.json` + اختبار حراسة؛ على جهاز المالك يبقى اختيار قديم محفوظ في `.vs/…/.suo` يُصحح مرة واحدة (Set as Startup Project) | مغلق |
 
 ## 19. آخر التحديثات
 | التاريخ | الوكيل/الجلسة | التحديث |
 |---|---|---|
+| 2026-11-07 | إصلاح | F5 في Visual Studio: `DefaultStartup` لـ `Mizad.Desktop` في `Mizad.slnx` (مُتحقق بمكتبة VS 2026)، `launchSettings.json` (Development)، `appsettings.Development.json`، 3 اختبارات حراسة؛ 88/88 |
+| 2026-11-07 | Phase 2 | تنفيذ المهام 2.1–2.27؛ 85/85 اختباراً، 0 تحذيرات؛ انحرافات التصميم موثقة في DATABASE_DESIGN §13؛ Phase 2 = Completed |
 | 2026-11-07 | تحديث الخطة (طلب المالك) | D-043 ترحيل تلقائي آمن (مهام 2.21–2.27)؛ D-044 شاشة البداية ومعالج الإعداد (4.14–4.16، 18.3/18.3a)؛ D-045 العمل في الخلفية ومؤشرات التحميل (4.22)؛ D-046 مراقبة الاتصال (4.23–4.25، 9.12، 17.10)؛ D-047 الالتزام بطلب المالك فقط وCo-authored-by باسم المطور |
 | 2026-11-07 | Phase 1 | تنفيذ المهام 1.1–1.15؛ 33/33 اختباراً، 0 تحذيرات؛ D-003 وD-041 محدّثان؛ Phase 1 = Completed |
 | 2026-11-07 | Phase 0 | إنشاء الخطة الكاملة والوثائق وملفات الإدارة؛ Phase 0 = Completed |
 
 ## 20. المرحلة أو المهمة التالية
-**Phase 2 — المهمة 2.1:** `MizadDbContext` + `IMizadDbContext` + `ConfigureConventions` + `UseCollation("Arabic_100_CI_AI")`، ثم 2.2 → 2.20 بالترتيب.
-قبل البدء: إضافة حزم EF Core 10 (`Microsoft.EntityFrameworkCore`، `.SqlServer`، `.Design`) إلى `Directory.Packages.props` بإصدار 10.0.14 أو أحدث مستقر من سلسلة 10.0؛ قراءة DATABASE_DESIGN.md كاملاً؛ تذكّر أن البحث العربي عبر `SearchName` المُطبَّع فقط (D-041).
+**Phase 3 — المهمة 3.1:** كتالوج الصلاحيات (BUSINESS_RULES §9) ثم 3.2 → 3.10 بالترتيب.
+قبل البدء: الأدوار والصلاحيات تُضاف إلى `DatabaseSeeder` (مزامنة البذور — لا ترحيل لازم إلا إن تغيرت الكيانات)؛ `ICurrentUser` الحالي مؤقت (`AnonymousCurrentUser`) ويُستبدل في 3.6؛ `IAuditLogger.Log(context, entry)` جاهز للاستخدام.
 
 ---
 
@@ -1291,6 +1302,6 @@ dotnet test --solution Mizad.slnx           # اختبارات (Microsoft.Testin
 dotnet run --project src/Mizad.Desktop      # تشغيل
 ./scripts/build.ps1                         # restore + build Release + كل الاختبارات
 ./scripts/build.ps1 -UnitOnly               # بلا اختبارات التكامل (لا يحتاج SQL Server)
-dotnet ef migrations add <Name> --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop
+dotnet ef migrations add <Name> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure --output-dir Persistence/Migrations
 sqlcmd -S . -E -C -Q "SELECT name FROM sys.databases"
 ```

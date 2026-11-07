@@ -402,6 +402,15 @@ CashAccounts ─ CashTransactions ◄── (CashVouchers / Expenses / CashTrans
 | 2026-11-07 | الإصدار الأول | Phase 0 | P0 |
 | 2026-11-07 | توضيح أن الترتيب العربي لا يتجاهل التشكيل (§1) | اختبار تكامل في P1 — D-041 | P1 |
 | 2026-11-07 | سياسة الترحيل التلقائي (§14) | طلب المالك — D-043 | — |
+| 2026-11-07 | الترتيب `Arabic_100_CI_AI` يُضبط في `CREATE DATABASE` داخل المُهيئ، لا عبر `UseCollation` في النموذج | `UseCollation` يولّد `ALTER DATABASE` داخل الترحيل (ممنوع — §14.3)؛ المُهيئ يحذّر إن وجد قاعدة بترتيب آخر | P2 |
+| 2026-11-07 | البذور عبر `DatabaseSeeder` صريح (يضيف الناقص فقط) يستدعيه المُهيئ، لا `UseAsyncSeeding` | نفس الكود هو «مزامنة البذور» بعد كل ترحيل، ويُختبر مباشرة | P2 |
+| 2026-11-07 | صنف الصلاحية اسمه `RolePermissionGrant` (الجدول `RolePermissions` بلا تغيير) | قاعدة المحلل CA1711 تمنع اللاحقة Permission | P2 |
+| 2026-11-07 | `InventoryCounts.Status` يستخدم `DocumentStatus` (Draft=مفتوح، Posted=معتمد، Voided=ملغى) + عمود `IsSubmitted`؛ أُلغي `ApprovedAtUtc/ApprovedByUserId` لصالح `PostedAtUtc/PostedByUserId` | توحيد دورة حياة المستندات وقيود CHECK | P2 |
+| 2026-11-07 | `ReturnSettlementMethod`: CashRefund=1، PartyCredit=2 (مشترك للبيع والشراء) | تعداد واحد بدل CustomerCredit/SupplierCredit | P2 |
+| 2026-11-07 | `VoucherReasons.Scope` بدل `VoucherType`؛ `CashTransactions.PartyType` غير فارغ (None=0) | وضوح الاسم؛ قيد CHECK واحد للطرف | P2 |
+| 2026-11-07 | فهرس البنود المفتوحة صار `(CustomerId|SupplierId, IsReversed, DueDate)` بدل الفهرس المرشّح `SettledAmount < Debit + Credit` | الفهارس المرشحة في SQL Server لا تقارن عمودين | P2 |
+| 2026-11-07 | أعمدة الإنشاء في السجلات الإلحاقية عبر `LedgerRecord`/`IHasCreationStamp`؛ كل رأس مستند له فهرس `(Status, DocumentDate)`؛ EF ينشئ فهارس لمفاتيح التدقيق الخارجية | فهارس قوائم المستندات؛ سلوك EF الافتراضي مقبول لحجم المحل | P2 |
+| 2026-11-07 | `Customers.Code`/`Suppliers.Code` nvarchar(20)؛ كود الزبون النقدي `WALKIN`؛ كود المخزن الرئيسي `MAIN` | — | P2 |
 
 ## 14. سياسة الترحيلات (D-043 — ملزمة)
 
@@ -412,8 +421,8 @@ CashAccounts ─ CashTransactions ◄── (CashVouchers / Expenses / CashTrans
 
 ### 14.2 كيف يضيف المطور تغييراً على المخطط
 1. عدّل الكيان وإعداده (`IEntityTypeConfiguration`).
-2. `dotnet ef migrations add <PascalCaseName> --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop`
-3. راجع ملف الترحيل والـ SQL: `dotnet ef migrations script <Previous> <New> --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop`
+2. `dotnet ef migrations add <PascalCaseName> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure --output-dir Persistence/Migrations`
+3. راجع ملف الترحيل والـ SQL: `dotnet ef migrations script <Previous> <New> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure`
 4. إن أضاف صلاحية/إعداداً/قيمة مرجعية: حدّث مزامنة البذور.
 5. شغّل الاختبارات: `HasPendingModelChanges`، تطبيق من الصفر، حراسة العمليات المدمرة، اختبارات الترقية.
 6. سجّل التغيير في §13.

@@ -48,7 +48,7 @@ dotnet build Mizad.slnx                    # يجب أن ينجح قبل أي ت
 
 ### 2.1 قاعدة البيانات والترحيلات (D-043 — إلزامي)
 - **كل** تغيير على المخطط (جدول، عمود، فهرس، قيد، View) = ترحيل EF Core جديد:
-  `dotnet ef migrations add <PascalCaseName> --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop`
+  `dotnet ef migrations add <PascalCaseName> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure --output-dir Persistence/Migrations`
   ثم راجع ملف الترحيل المولد والـ SQL الناتج قبل اعتباره صحيحاً.
 - الترحيلات تُطبق **تلقائياً** عند إقلاع البرنامج (شاشة البداية) بعد نسخة احتياطية تلقائية. لذلك يجب أن يكون كل ترحيل:
   - **آمناً للبيانات:** لا حذف/إعادة تسمية مدمرة لعمود أو جدول فيه بيانات إلا بموافقة المالك، مع ترحيل البيانات داخل نفس الترحيل وإدراجه في قائمة الاستثناء الموثقة (DATABASE_DESIGN §14).

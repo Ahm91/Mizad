@@ -14,6 +14,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup Label="Logging">
@@ -23,6 +25,12 @@
   </ItemGroup>
 
   <ItemGroup Label="Data / Security">
+    <!-- EF Core 10 (D-003, D-004). Application uses only the core package; Infrastructure uses SqlServer + Design.
+         The dotnet-ef CLI is pinned to the same version in dotnet-tools.json. -->
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.14" />
     <!-- Pinned to the 6.1 line: EF Core SqlServer 10.0.14 depends on Microsoft.Data.SqlClient [6.1.7, ). -->
     <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.8" />
     <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.0.14" />

@@ -25,11 +25,13 @@ dotnet test --solution Mizad.slnx        # Microsoft.Testing.Platform (global.js
 dotnet run --project src/Mizad.Desktop
 
 # ترحيل جديد
-dotnet ef migrations add <Name> --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop
+dotnet ef migrations add <Name> --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure --output-dir Persistence/Migrations
 # سكربت للمراجعة
-dotnet ef migrations script --idempotent --project src/Mizad.Infrastructure --startup-project src/Mizad.Desktop -o artifacts/sql/migrate.sql
+dotnet ef migrations script --idempotent --project src/Mizad.Infrastructure --startup-project src/Mizad.Infrastructure -o artifacts/sql/migrate.sql
 ```
 أداة EF: `dotnet tool install --global dotnet-ef` (نفس إصدار EF Core).
+
+- في Visual Studio: **F5 يشغّل `Mizad.Desktop`** (موسوم `DefaultStartup` في `Mizad.slnx` — D-002) بالملف الشخصي «Mizad» وبيئة `Development`. إن ظهر مشروع آخر كمشروع بدء على جهاز قديم فذلك إعداد محلي محفوظ في `.vs/`: زر أيمن على `Mizad.Desktop` ← «Set as Startup Project» مرة واحدة.
 
 اتصال التطوير الافتراضي (في `connection.json` المحلي لا في المستودع):
 `Server=.;Database=Mizad_Dev;Integrated Security=True;TrustServerCertificate=True`

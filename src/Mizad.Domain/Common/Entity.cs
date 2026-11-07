@@ -16,18 +16,24 @@ public interface IHasRowVersion
     byte[] RowVersion { get; }
 }
 
-/// <summary>Entities whose creation/modification is stamped automatically (task 2.10 interceptor).</summary>
-public interface IAuditable
+/// <summary>
+/// Append-only records stamped once at creation (ledgers, movements). Stamped by the save interceptor (task 2.10).
+/// </summary>
+public interface IHasCreationStamp
 {
     DateTime CreatedAtUtc { get; }
 
     int? CreatedByUserId { get; }
 
+    void MarkCreated(DateTime utcNow, int? userId);
+}
+
+/// <summary>Entities whose creation and modification are stamped automatically (task 2.10).</summary>
+public interface IAuditable : IHasCreationStamp
+{
     DateTime? UpdatedAtUtc { get; }
 
     int? UpdatedByUserId { get; }
-
-    void MarkCreated(DateTime utcNow, int? userId);
 
     void MarkUpdated(DateTime utcNow, int? userId);
 }
@@ -54,5 +60,19 @@ public abstract class AuditableEntity<TId> : Entity<TId>, IAuditable
     {
         UpdatedAtUtc = utcNow;
         UpdatedByUserId = userId;
+    }
+}
+
+/// <summary>Base for append-only records (movements, ledger entries, cash transactions).</summary>
+public abstract class LedgerRecord : Entity<long>, IHasCreationStamp
+{
+    public DateTime CreatedAtUtc { get; private set; }
+
+    public int? CreatedByUserId { get; private set; }
+
+    public void MarkCreated(DateTime utcNow, int? userId)
+    {
+        CreatedAtUtc = utcNow;
+        CreatedByUserId = userId;
     }
 }

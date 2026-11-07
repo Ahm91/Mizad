@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Unit tests: Domain calculators, Application logic without a database, ViewModels, architecture rules (TEST_PLAN §1). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>Mizad.UnitTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="Shouldly" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Mizad.Domain\Mizad.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Mizad.Application\Mizad.Application.csproj" />
+    <ProjectReference Include="..\..\src\Mizad.Infrastructure\Mizad.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\Mizad.Desktop\Mizad.Desktop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+    <Using Include="Shouldly" />
+    <!-- UseWPF projects do not import System.IO implicitly. -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+</Project>

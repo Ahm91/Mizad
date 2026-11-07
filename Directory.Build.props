@@ -1,0 +1,22 @@
+<Project>
+  <!-- Shared build settings for every Mizad project (agent.md task 1.5). -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <Deterministic>true</Deterministic>
+    <SatelliteResourceLanguages>ar;en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <!-- Single source of the product version (D-035 / task 18.1). -->
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Product>مِيزاد</Product>
+    <Company>Mizad</Company>
+    <Copyright>© 2026 Mizad</Copyright>
+    <NeutralLanguage>ar</NeutralLanguage>
+  </PropertyGroup>
+</Project>

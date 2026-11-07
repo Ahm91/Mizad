@@ -1,0 +1,9 @@
+﻿<Application x:Class="Mizad.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnMainWindowClose">
+    <!-- No StartupUri: the window is created through the Generic Host in App.xaml.cs (task 1.11). -->
+    <Application.Resources>
+        <!-- Theme dictionaries are merged here in Phase 4. -->
+    </Application.Resources>
+</Application>

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Pure domain: entities, enums, calculators. No package or project references allowed (ARCHITECTURE §1). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Mizad.Domain</RootNamespace>
+  </PropertyGroup>
+
+</Project>

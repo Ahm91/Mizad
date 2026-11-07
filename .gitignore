@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# ===== Mizad-specific =====
+# Build/publish outputs and generated scripts
+artifacts/
+# SQL Server backups (never commit data)
+*.bak
+# Machine/user-local configuration (may contain encrypted credentials)
+connection.json
+machine.json
+user.json

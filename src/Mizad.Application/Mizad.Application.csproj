@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Use cases, DTOs, validators, abstractions. Must not reference Infrastructure, SqlServer or WPF (ARCHITECTURE §1). -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Mizad.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mizad.Domain\Mizad.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

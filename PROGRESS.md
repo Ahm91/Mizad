@@ -13,8 +13,8 @@
 | آخر مرحلة مكتملة | Phase 2 — Database Design & Infrastructure (2026-11-07) |
 | آخر مهمة مكتملة | 2.27 توثيق سياسة الترحيلات + التحقق النهائي للمرحلة |
 | المهمة التالية | **3.1** كتالوج الصلاحيات `Permissions` (BUSINESS_RULES §9) |
-| فرع Git الحالي | `phase/02-database` (متفرع من `phase/01-foundation`). **عمل Phase 2 غير ملتزم به** — الالتزام بطلب المالك فقط (D-047) |
-| التزامات موجودة | `phase/01-foundation`: `8c7e692` (وثائق Phase 0)، `08ee566` (أساس Phase 1) — بهوية Ahm91. `master` و`origin` بلا تغيير، لا دفع |
+| فرع Git الحالي | `phase/02-database` (متفرع من `phase/01-foundation`) — **كل العمل ملتزم به** |
+| التزامات موجودة | `8c7e692` وثائق Phase 0 · `08ee566` أساس Phase 1 · `6562dd1` Phase 2 قاعدة البيانات · `8302cdd` إصلاح مشروع البدء · + التزام تحديث المتابعة — كلها بهوية Ahm91. `master` و`origin` بلا تغيير، لا دفع (الدمج والدفع بطلب منفصل) |
 | العمل الجاري | لا شيء |
 | مسؤول دمج الملفات المشتركة | غير محدد (وكيل واحد حالياً) |
 
@@ -30,7 +30,7 @@
 | 2026-11-07 | تشغيل `Mizad.exe` (Release) | يُقلع ويستجيب ويُغلق برمز 0 |
 | 2026-11-07 | فحص النظافة بعد الاختبارات | 0 قواعد `Mizad_IT_*`، 0 سجلات نسخ في msdb، 0 ملفات نسخ اختبار |
 
-## الملفات المعدلة في آخر جلسة (Phase 2 — غير ملتزم بها)
+## الملفات المعدلة في آخر جلسة (Phase 2 — ملتزم بها في `6562dd1` و`8302cdd`)
 - **جديدة:** `dotnet-tools.json` (dotnet-ef 10.0.14)؛ كيانات Domain لكل الوحدات (`Identity`، `Administration`، `Catalog`، `Inventory`، `Parties`، `Sales`، `Purchasing`، `Returns`، `Treasury`)، `Common/DocumentEntity.cs`، `Common/SharedEnums.cs`، `Calculations/ArabicNormalizer.cs`، `Administration/SettingKeys.cs`؛ `Application/Abstractions/{Persistence, Database}`؛ `Infrastructure/Persistence/**` (السياق، الإعدادات، الخدمات، المُهيئ، القفل، البذّار، الترحيل `InitialCreate`)، `Infrastructure/Backup/DatabaseBackupService.cs`؛ اختبارات `TestDatabase`، `TestData`، `Persistence/*`، `ArabicNormalizerTests`، `SettingsAndSequencesTests`، `ModelAndMigrationGuardTests`.
 - **معدلة:** `Directory.Packages.props`، csproj (Application، Infrastructure، IntegrationTests)، `.editorconfig`، `Common/Entity.cs`، `IAuditLogger.cs`، `Infrastructure/DependencyInjection.cs`، `SqlServerFixture.cs`.
 - **وثائق:** `agent.md`، `DECISIONS.md` (ملاحظة تنفيذ D-043)، `docs/DATABASE_DESIGN.md` (§13 الانحرافات، §14 الأوامر)، `docs/TEST_PLAN.md`، `docs/DEPLOYMENT.md`، `AGENT_INSTRUCTIONS.md` (أمر الترحيل)، `PROGRESS.md`.
@@ -40,7 +40,7 @@
 |---|---|---|---|
 | K-01 | قرارات «مقترحة» بانتظار تأكيد المالك (انظر أدناه) | لا تمنع P3–P4 | — |
 | K-02 | الشعار نقطي فقط ونصه كحلي (لا يظهر على الشريط الكحلي) | يحتاج نسخة فاتحة | 4.4 |
-| K-03 | عمل Phase 2 غير ملتزم به | يُفقد إن لم يُلتزم | بانتظار طلب المالك |
+| K-03 | ~~عمل Phase 2 غير ملتزم به~~ | — | **مغلق:** ملتزم به (`6562dd1`، `8302cdd`) |
 | K-05 | اختيار مشروع البدء القديم محفوظ في `.vs/Mizad.slnx/v18/.suo` على جهاز المالك | F5 يحاول تشغيل `Mizad.Application` حتى يُصحح مرة واحدة | المالك: زر أيمن على `Mizad.Desktop` ← Set as Startup Project (المستودع نفسه مُصلح) |
 
 ## القرارات المطلوبة من مالك المشروع
@@ -56,7 +56,7 @@
 | ~~Q-08~~ | ~~سياسة الالتزام في Git~~ | **محسوم (D-047):** لا التزام تلقائي؛ الالتزام والدفع بطلب المالك فقط؛ `Co-authored-by: Ahm91 <ahmed.been8@gmail.com>`؛ لا أسطر نسبة لأدوات الذكاء الاصطناعي | — |
 
 ## الخطوات التالية
-1. (المالك) طلب الالتزام لعمل Phase 2 متى شاء؛ ودمج الفروع في `master` والدفع إلى `origin` بطلب منفصل.
+1. (المالك) عند الرغبة: دمج `phase/02-database` في `master` والدفع إلى `origin` — بطلب صريح منفصل (D-047).
 2. بدء Phase 3 بالمهام 3.1 → 3.10 بالترتيب.
 
 ## متطلبات المالك المضافة (2026-11-07) — أين وُضعت
@@ -90,6 +90,7 @@
 ## سجل الجلسات (الأحدث أولاً)
 | التاريخ | الجلسة | ما أُنجز | البناء | الاختبارات |
 |---|---|---|---|---|
+| 2026-11-07 | Git | التزامان بطلب المالك على `phase/02-database`: `6562dd1` (Phase 2) و`8302cdd` (إصلاح مشروع البدء)، بهوية `Ahm91 <ahmed.been8@gmail.com>`؛ لا دفع | — | — |
 | 2026-11-07 | إصلاح F5 | `DefaultStartup="true"` على `Mizad.Desktop` في `Mizad.slnx` (السبب: VS 2026 يختار أول مشروع أبجدياً عند غياب الإعداد — `Mizad.Application`)؛ `launchSettings.json` + `appsettings.Development.json`؛ `SolutionFileTests` (3) | ✅ 0/0 | ✅ 88/88 |
 | 2026-11-07 | Phase 2 | المهام 2.1–2.27: 45 كياناً وإعداداتها وقيودها، الترحيل `InitialCreate`، الترحيل التلقائي الآمن (قفل + نسخة مسبقة + تقدم + بذور + تدقيق)، وحدة العمل، الترقيم، ساعة الخادم، الإعدادات، ترجمة الأخطاء؛ Phase 2 = Completed | ✅ 0/0 | ✅ 85/85 |
 | 2026-11-07 | Git | التزامان بطلب المالك على `phase/01-foundation` بهوية `Ahm91 <ahmed.been8@gmail.com>`؛ إنشاء `phase/02-database` | — | — |

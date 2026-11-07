@@ -1,9 +1,10 @@
 <Solution>
+  <!-- Mizad.Desktop is the only executable project: DefaultStartup makes Visual Studio start it by default. -->
   <Folder Name="/src/">
+    <Project Path="src/Mizad.Desktop/Mizad.Desktop.csproj" DefaultStartup="true" />
     <Project Path="src/Mizad.Domain/Mizad.Domain.csproj" />
     <Project Path="src/Mizad.Application/Mizad.Application.csproj" />
     <Project Path="src/Mizad.Infrastructure/Mizad.Infrastructure.csproj" />
-    <Project Path="src/Mizad.Desktop/Mizad.Desktop.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Mizad.UnitTests/Mizad.UnitTests.csproj" />
@@ -12,6 +13,8 @@
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="dotnet-tools.json" />
     <File Path=".editorconfig" />
     <File Path="agent.md" />
     <File Path="AGENT_INSTRUCTIONS.md" />
